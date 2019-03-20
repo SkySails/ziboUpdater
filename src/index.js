@@ -5,30 +5,6 @@ const {autoUpdater} = require("electron-updater");
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-ipcMain.on('request-mainprocess-action', (event, arg) => {
-  // Displays the object sent from the renderer process:
-  //{
-  //    message: "Hi",
-  //    someData: "Let's go"
-  //}
-  console.log(arg.folder)
-  console.log(typeof arg)
-  console.log(Object.keys(arg))
-  download(arg)
-});
-
-
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
   app.quit();
@@ -72,7 +48,7 @@ app.on('ready', function() {
 });
 
 autoUpdater.on('update-downloaded', (info) => {
-  win.webContents.send('updateReady')
+  win.webContents.send('updateReady', info)
 });
 
 ipcMain.on("quitAndInstall", (event, arg) => {
@@ -96,29 +72,62 @@ app.on('activate', () => {
   }
 });
 
+ipcMain.on('request-mainprocess-action', (event, arg) => {
+  
+  console.log(Object.keys(arg))
+  console.log(Object.values(arg))
+  download(arg);
+});
+
 
 
 // Register the download manager
 const DownloadManager = require("electron-download-manager");
-DownloadManager.register({downloadFolder: app.getPath("downloads") + "/ziboUpdater"});;
+DownloadManager.register({downloadFolder: app.getPath("downloads")});;
 
 
-function download(data) {
-    DownloadManager.download({
-      url: data.link,
-      downloadFolder: data.folder,
-      path: data.path,
-      icon: path.join(__dirname, 'assets/icons/png/96x96.png'),
-      customFileName: data.customFileName,
-      onProgress: (progress, item) => {
-        mainWindow.webContents.send('downloadProgress', progress, data.customFileName);
+function download(arg) {
+  var arg = arg
+  console.log("URL was set to: " + arg.link)
+  console.log("Path was NOT SET!", arg.path)
+  console.log("Download folder was set to: " + arg.folder)
+  console.log("Custom filename was set to: " + arg.customFileName)
+  DownloadManager.download({
+    url: arg.link,
+    downloadFolder: arg.folder,
+    customFileName: arg.customFileName,
+    onProgress: (progress, item) => {
+      mainWindow.webContents.send('downloadProgress', progress, arg.customFileName);
+    }
+  }, function (error, info) {
+      if (error) {
+          console.error(error)
+          return;
       }
-    }, function (error, info) {
-        if (error) {
-            console.error(error)
-            return;
-        }
 
-        console.log("DONE: " + info.url)
-    });
+      console.log("ALL FILES DONE: " + info.filePath)
+  });
 }
+
+ipcMain.on('download-all', (event, data) => {
+
+  DownloadManager.download({
+    url: data.list[0].link,
+    downloadFolder: data.folder,
+    customFileName: data.list[0].name,
+    onProgress: (progress, item) => {
+      mainWindow.webContents.send('downloadProgress', progress, data.list[0].name);
+    }
+  }, function (error, info) {
+      if (error) {
+          console.error(error)
+          return;
+      }
+
+      console.log("ALL FILES DONE: " + info.filePath)
+      data.list.shift()
+      var remaining = data
+      mainWindow.webContents.send('remaining-download', data);
+  });
+
+});

@@ -24,7 +24,12 @@ window.get_updates = function() {
         window.driveDirectory = json.files
         removeNonUpdates(window.driveDirectory);
         console.log("Shortened, sorted list:", window.ziboUpdates)
+        var installedVersion = window.zibo_version_number.replace(/ /g,"_").replace(/[.]/,"_")
 
+        if (window.ziboUpdates[0].name.indexOf(installedVersion + ".zip") !== -1) {
+            document.getElementById("current-version-field").children[0].innerHTML = "LATEST";
+            return;
+        }
 
         for (var patch in window.ziboUpdates) {
             var list = window.ziboUpdates
@@ -38,8 +43,7 @@ window.get_updates = function() {
                     name: window.ziboUpdates[patch].name
                 }
                 allAvailableDownloads.push(info)
-            } else {
-                var installedVersion = window.zibo_version_number.replace(/ /g,"_").replace(/[.]/,"_")
+            }  else {
                 if (patchName.indexOf(installedVersion + ".zip") === -1) {
                     console.log(window.ziboUpdates[patch].name, window.zibo_version_number.replace(/ /g,"_").replace(/[.]/,"_"))
                     buildDlElement(window.ziboUpdates[patch], link);
@@ -65,10 +69,12 @@ window.get_updates = function() {
 // Function to filter out non-needed updates from the recieved list.
 function removeNonUpdates(list) {
     window.ziboUpdates = list.filter(item=>item.name.includes("B73"));
-    var ziboVersion = zibo_version_number.match(/^\d.\d\d(?=\s)/)[0].replace(".","_")
-    var updateVersion = window.ziboUpdates[0].name.match(/.(?:_)\d\d(?=_)/)[0]
-    if (ziboVersion.split("_")[1] < updateVersion.split("_")[1]) {
-        console.log("Your version, " + ziboVersion.split("_")[1] +", is old. The latest is: " + updateVersion.split("_")[1])
+    if (zibo_version_number !== "Not_installed") {
+        var ziboVersion = zibo_version_number.match(/^\d.\d\d(?=\s)/)[0].replace(".","_")
+        var updateVersion = window.ziboUpdates[0].name.match(/.(?:_)\d\d(?=_)/)[0]
+        if (ziboVersion.split("_")[1] < updateVersion.split("_")[1]) {
+            console.log("Your version, " + ziboVersion.split("_")[1] +", is old. The latest is: " + updateVersion.split("_")[1])
+        }
     }
 
     window.ziboUpdates = window.ziboUpdates.filter(item=>item.name.includes(window.ziboUpdates[0].name.match(/.(?:_)\d\d(?=_)/)[0]));
@@ -134,22 +140,55 @@ window.buildDlElement = function (downloads, bigLink) {
     document.getElementById('downloads').appendChild(trElement) 
 }
 
-window.downloadAll = function() {
-    var links = []
-    for (var object in allAvailableDownloads) {
-        links.push(allAvailableDownloads[object].link)
+
+const { ipcRenderer } = require('electron');
+
+ipcRenderer.on('remaining-download', function(event, remaining) {
+    window.downloadAll(remaining)
+    console.log("Called again!")
+});
+
+window.downloadAll = function(remaining) {
+    console.log("Called with ", remaining)
+    // Se efter om det finns en array med 0 kvar, isåfall == klar!
+    if ((typeof remaining !== 'undefined') && remaining.list.length == 0) {
+        console.log("No remaining links, possibly no left?")
+        return;
+    }
+
+
+    var list = []
+    if ((typeof remaining !== 'undefined') && (remaining.list.length > 0)) {
+        console.log("REmaining!")
+        ipcRenderer.send('download-all', remaining);
+        return;
+    }
+
+
+    var dlFolder = (document.getElementById('dl-path').innerText) + "/ZU_Downloads";
+    console.log("Download folder was set to " + dlFolder)
+    
+    
+    // OM remaining ej anges, påbörja loop.
+    if (!remaining) {
+
+        // Ladda in all tillgängliga länkar
+        list = allAvailableDownloads
+        console.log("Inlästa länkar för nedladdning: ", list)
+
+        let data = {
+            list: list,
+            folder: dlFolder,
+            customFileName: "FINNS I LIST"
+        };
+
+        ipcRenderer.send('download-all', data);
+        return;
     }
     
-    var allElements = document.querySelectorAll('.download-entry')
-
-    for (var index in links) {
-        window.downloadSingle(links[index], window.ziboUpdates[index].name)
-    }
 }
 
 
-
-const { ipcRenderer } = require('electron');
 
 //Downloads by bulk not working atm, using multiple singledownloads
 window.downloadSingle = function(link, name) {
@@ -167,6 +206,9 @@ window.downloadSingle = function(link, name) {
     };
     ipcRenderer.send('request-mainprocess-action', Data);
 }
+
+
+
 
 //Request to update progress from main
 ipcRenderer.on('downloadProgress', function(event, progressObject, fileName) {
@@ -191,36 +233,6 @@ ipcRenderer.on('downloadProgress', function(event, progressObject, fileName) {
 
   });
 
-
-// App-wide download function. Uses bulk download and is therefore capable of downloading multiple files.
-window.download = function (links, fileName) {
-    console.log(links)
-    var dlPath = (document.getElementById('dl-path').innerText) + "/" + fileName;
-
-    DownloadManager.bulkDownload({
-        urls: links,
-        downloadFolder: dlPath + "/ZU_Downloads",
-        onProgress: (progress, item) => {
-            console.log(progress);
-            console.log(item.getFilename())
-            console.log(item.getTotalBytes())
-        }
-
-    }, function (error, finished, errors) {
-        if (error) {
-            console.log("finished: " + finished);
-            console.log("errors: " + errors);
-            return;
-        }
-
-        console.log("all finished", finished);
-        // Make buttons green when done
-        for (let element of elements) {
-            element.children[0].style = "background:#5d9c7d!important;transition:.2s;"
-            element.children[1].style = "background:#5d9c7d!important;transition:.2s;"
-        }
-    })
-}
 
 window.unzipDirectory = function() {
     var dlPath = (document.getElementById('dl-path').innerText) + "/ZU_Downloads";
@@ -303,6 +315,9 @@ window.unzipFunction = function(list, dlPath) {
     // Errors
     unzipper.on('error', function(err) {
         console.log("Error!", err);
+        if (err.indexOf("permitted") !== -1) {
+            alert("Permission error!")
+        }
     });
 
     // When done
@@ -310,6 +325,7 @@ window.unzipFunction = function(list, dlPath) {
         console.log("Finished with extraction.", log);
         progressElement.children[0].children[0].style.background = "rgba(88, 183, 224, 0.6)"
         progressElement.children[0].children[1].style.background = "rgba(88, 183, 224, 0.6)"
+        progressElement.backgroundPositionX = "0px"
         window.unzipFunction(remaining, dlPath)
     });
 
@@ -338,26 +354,33 @@ window.unzipFunction = function(list, dlPath) {
 
 }
 
-
+var lastVersion
 
 // File reader. Used to determine currently installed version by looking for versios in the readme.
 window.versionCheck = function() {
     var path = document.getElementById('zibo-path').innerText
-    var lastVersion = window.zibo_version_number
+    if (lastVersion) {
+        lastVersion = window.zibo_version_number
+    }
     fs.readFile((path+"/README.txt"), function(err, data) {
         if (err) {
             console.error(err);
             console.log("This means that zibo is not installed. Showing all updates.")
-            window.zibo_version_number = "Not_installed"
+            window.zibo_version_number = "Not_installed";
+            window.clearDownloads()
             return; 
         }
         var split = data.toString().slice(data.indexOf("Release note") + 30)
         window.zibo_version_name = split.split(/:(.+)?/)[0];
         window.zibo_version_number = zibo_version_name.split(/\s(\D*)$/)[0];
-        
+
+
         document.getElementById("current-version-field").children[0].innerHTML = window.zibo_version_number;
 
         console.log(window.zibo_version_name, window.zibo_version_number)
+
+        window.clearDownloads()
+
         if ((window.zibo_version_number != lastVersion) && (window.dlPathSetState)) {
             window.clearDownloads()
         }
@@ -372,6 +395,5 @@ window.clearDownloads = function () {
     }
 
     allAvailableDownloads = []
-    window.versionCheck();
     window.get_updates();
 }

@@ -1,6 +1,7 @@
 // This module enables the dialog for the browse buttons on the page
 
 let remote = require('electron').remote;
+let app = remote.app
 let dialog = remote.dialog
 
 
@@ -9,6 +10,7 @@ let browseDl = document.getElementById('browse-dl');
 
 let pathZibo = document.getElementById('zibo-path')
 let pathDl = document.getElementById('dl-path')
+pathDl.innerHTML = app.getPath("downloads")
 
 browseZibo.addEventListener('click', (e) => {
     browseZibo.className = browseZibo.className + " active"
@@ -22,7 +24,6 @@ browseZibo.addEventListener('click', (e) => {
             pathZibo.innerHTML = filepath
             browseZibo.className = "browse-button"
             window.versionCheck()
-            window.get_updates()
         }
         browseZibo.className = "browse-button"
     }))

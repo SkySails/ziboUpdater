@@ -16,6 +16,17 @@
     </div>
 
     <div class="content">
+        
+      <div id="update-page" class="update-modal">
+            <div class="update-modal-content">
+                <div>
+                  <h1 id="release-heading">Release name</h1>
+                  <p id="release_notes">Release notes:</p>
+                  <span>Your installation will be updated on restart!</span>
+                </div>
+            </div>
+        </div>
+
         <div class="column">
             <div class="paths">
               <div id="current-version-field">
@@ -80,7 +91,7 @@
                             </a>
                           </li>
               
-                        <li>
+                        <li id="settings-button">
                           <a href="#">
                             <span>Settings</span>
                           </a>
@@ -98,6 +109,18 @@
                 </div>
 
                 <div class="data">
+
+                <div id="settings-page" class="modal">
+                  <div class="modal-content">
+                      <span class="close">&times;</span>
+                      <div>
+                        <h1>Settings:</h1>
+                        <p>Empty for now.</p>
+                      </div>
+                  </div>
+                </div>
+
+
                   <table id="downloads-header">
                     <thead>
                         <tr id="table-categories">
@@ -113,7 +136,13 @@
                     </div>
                     <table id="downloads">
                       <tbody>
-                        
+                          <tr class="download-entry">
+                            <td style="height: 40px;">
+                              <div>
+                                <span style="font-weight: bold; font-size: 18px; background: #159CD8; border-radius: 8px; padding: 6px 5px; margin: -10px;">Downloads will appear here once the path has been set.</span>
+                              </div>
+                            </td>
+                          </tr>
                       </tbody>
                     </table>
                     <div style="position: sticky; bottom: 0; z-index: 3; transform: rotate(180deg)">

@@ -15,7 +15,7 @@
       "uninstallerIcon": "build/icon.ico",
       "uninstallDisplayName": "Uninstall Zibo Updater"
     },
-    "win":{
+    "win": {
       "target": "nsis",
       "icon": "build/icon.ico",
       "publisherName": "Malte Hallström"
