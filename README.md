@@ -2,6 +2,7 @@
 
 # Zibo Updater&nbsp;&nbsp;&nbsp;![enter image description here](https://github.com/SkySails/ziboUpdater/blob/master/src/assets/icons/png/96x96.png?raw=true)
 
+![LinesOfCode](https://github.com/SkySails/ziboUpdater/blob/master/src/svg/loc.svg)
 ## An effort to make updating the zibomod for X-Plane easier to keep up with.
 
 Since the mod is primarily focused on the Windows OS, this app is currently only available for Windows. 
