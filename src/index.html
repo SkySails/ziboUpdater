@@ -18,6 +18,10 @@
     <div class="content">
         <div class="column">
             <div class="paths">
+              <div id="current-version-field">
+                 <span>Version: Waiting..</span>
+              </div>
+
               <div id="all-paths-container">
                 <p>The path in which zibomod is located. If the files don't exist, zibo will be installed here.</p>
                 
@@ -94,20 +98,28 @@
                 </div>
 
                 <div class="data">
-                  <table id="downloads">
+                  <table id="downloads-header">
                     <thead>
                         <tr id="table-categories">
-                            <th style="float: left; padding-left: 5px;">Name</th>
-                            <th style="margin-right: -30px;">Size</th>
-                            <th>Manual</th>
+                            <th style="float: left;padding-left: 5px;width: 100%;text-align: left;">Name</th>
+                            <th style="width: 16%;">Size</th>
+                            <th style="width: 30%;">Manual</th>
                         </tr>
                     </thead>
-                    
-                    <tbody>
-                        
-                    </tbody>
-
                   </table>
+                  <div id="downloads-footer">
+                    <div style="position: sticky; top: 0; z-index: 3;">
+                        <div id="dimma"></div>
+                    </div>
+                    <table id="downloads">
+                      <tbody>
+                        
+                      </tbody>
+                    </table>
+                    <div style="position: sticky; bottom: 0; z-index: 3; transform: rotate(180deg)">
+                        <div id="dimma"></div>
+                    </div>
+                  </div>
                 </div>
     
             </div>

@@ -1,0 +1,6 @@
+owner: SkySails
+repo: ziboUpdater
+provider: github
+updaterCacheDirName: ziboupdater-updater
+publisherName:
+  - Malte Hallström

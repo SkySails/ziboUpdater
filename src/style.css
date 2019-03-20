@@ -118,23 +118,29 @@ body {
     flex: 1;
     background: #3D4853;
     padding: 30px;
-    max-height: 530px;
-    overflow: auto;
 }
 
-.data::-webkit-scrollbar  {
+#downloads-footer::-webkit-scrollbar  {
     width: 7px;
+    position: relative;
+    z-index: 3;
     background: #485058;
 }
 
-.data::-webkit-scrollbar-thumb {
+#downloads-footer::-webkit-scrollbar-corner {
+    background: black;
+    margin-top: 50px;
+}
+
+#downloads-footer::-webkit-scrollbar-thumb {
     background: #747679;
     border-radius: 8px;
+    position: relative;
+    z-index: 3;
 }
 
 .side-nav {
     flex-basis: 220px;
-    max-height: 530px;
     background-color: #4B545D;
     z-index: 3;
     padding-top: 10px;
@@ -209,11 +215,43 @@ body {
     margin-left: 13px;
 }
 
+#downloads-header {
+    background: rgba(75,84,93,1);
+    color: white;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+    padding: 5px 20px;
+    width: 100%;
+    border-spacing: 0 10px;
+    border-collapse: separate;
+    text-align: center;
+    font-size: 18px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+#downloads-footer {
+    max-height: 420px;
+    overflow: auto;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+#dimma {
+    position: absolute;
+    height: 20px;
+    background: linear-gradient(180deg, rgba(72,80,88,1) 0%, rgba(0,212,255,0) 100%);
+    right: 0; left: 0;
+    z-index: 4;
+}
+
 #downloads {
     background: #485058;
     color: white;
     overflow: hidden;
-    border-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
     padding: 10px 20px;
     width: 100%;
     border-spacing: 0 10px;
@@ -346,6 +384,25 @@ body {
     text-overflow: ellipsis;
     direction: rtl;
     text-align: left;
+}
+
+#current-version-field {
+    max-width: 230px;;
+    right: 20px;
+    top: 65px;
+    position: absolute;
+    height: 35px;
+    line-height: 35px;
+    background: #159CD8;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+#current-version-field span {
+    float: center;
+    padding: 5px 10px;
+    color: white;
+    
 }
 
 

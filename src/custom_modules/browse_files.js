@@ -22,6 +22,7 @@ browseZibo.addEventListener('click', (e) => {
             pathZibo.innerHTML = filepath
             browseZibo.className = "browse-button"
             window.versionCheck()
+            window.get_updates()
         }
         browseZibo.className = "browse-button"
     }))
@@ -40,8 +41,6 @@ browseDl.addEventListener('click', (e) => {
             window.dlPathSetState = true;
             pathDl.innerHTML = filepath
             browseZibo.className = "browse-button"
-            window.clearDownloads
-            window.get_updates()
         }
         browseDl.className = "browse-button"
     }))

@@ -40,12 +40,12 @@ window.get_updates = function() {
                 allAvailableDownloads.push(info)
             } else {
                 var installedVersion = window.zibo_version_number.replace(/ /g,"_").replace(/[.]/,"_")
-                if (patchName.indexOf(installedVersion) === -1) {
-                console.log(window.ziboUpdates[patch].name, window.zibo_version_number.replace(/ /g,"_").replace(/[.]/,"_"))
-                buildDlElement(window.ziboUpdates[patch], link);
-                var info = {
-                    link: link,
-                    name: window.ziboUpdates[patch].name
+                if (patchName.indexOf(installedVersion + ".zip") === -1) {
+                    console.log(window.ziboUpdates[patch].name, window.zibo_version_number.replace(/ /g,"_").replace(/[.]/,"_"))
+                    buildDlElement(window.ziboUpdates[patch], link);
+                    var info = {
+                        link: link,
+                        name: window.ziboUpdates[patch].name
                 }
                 allAvailableDownloads.push(info)
                 } else {
@@ -65,7 +65,13 @@ window.get_updates = function() {
 // Function to filter out non-needed updates from the recieved list.
 function removeNonUpdates(list) {
     window.ziboUpdates = list.filter(item=>item.name.includes("B73"));
-    window.ziboUpdates = window.ziboUpdates.filter(item=>item.name.includes("3_34"));
+    var ziboVersion = zibo_version_number.match(/^\d.\d\d(?=\s)/)[0].replace(".","_")
+    var updateVersion = window.ziboUpdates[0].name.match(/.(?:_)\d\d(?=_)/)[0]
+    if (ziboVersion.split("_")[1] < updateVersion.split("_")[1]) {
+        console.log("Your version, " + ziboVersion.split("_")[1] +", is old. The latest is: " + updateVersion.split("_")[1])
+    }
+
+    window.ziboUpdates = window.ziboUpdates.filter(item=>item.name.includes(window.ziboUpdates[0].name.match(/.(?:_)\d\d(?=_)/)[0]));
 }
 
 
@@ -81,7 +87,7 @@ function sizeUnit(downloads) {
 
 
 // Main constructor for the download list.
-function buildDlElement(downloads, bigLink) {
+window.buildDlElement = function (downloads, bigLink) {
     var name = downloads.name
     var size = sizeUnit(downloads)
     var link = bigLink
@@ -125,7 +131,7 @@ function buildDlElement(downloads, bigLink) {
     trElement.appendChild(tdDivContainer)
     trElement.appendChild(buttonTd)
     
-    document.getElementById('downloads').children[1].appendChild(trElement) 
+    document.getElementById('downloads').appendChild(trElement) 
 }
 
 window.downloadAll = function() {
@@ -302,8 +308,8 @@ window.unzipFunction = function(list, dlPath) {
     // When done
     unzipper.on('extract', function(log) {
         console.log("Finished with extraction.", log);
-        progressElement.children[0].children[0].style.backgroundColor = "rgba(88, 183, 224, 0.6)"
-        progressElement.children[0].children[1].style.backgroundColor = "rgba(88, 183, 224, 0.6)"
+        progressElement.children[0].children[0].style.background = "rgba(88, 183, 224, 0.6)"
+        progressElement.children[0].children[1].style.background = "rgba(88, 183, 224, 0.6)"
         window.unzipFunction(remaining, dlPath)
     });
 
@@ -348,6 +354,9 @@ window.versionCheck = function() {
         var split = data.toString().slice(data.indexOf("Release note") + 30)
         window.zibo_version_name = split.split(/:(.+)?/)[0];
         window.zibo_version_number = zibo_version_name.split(/\s(\D*)$/)[0];
+        
+        document.getElementById("current-version-field").children[0].innerHTML = window.zibo_version_number;
+
         console.log(window.zibo_version_name, window.zibo_version_number)
         if ((window.zibo_version_number != lastVersion) && (window.dlPathSetState)) {
             window.clearDownloads()

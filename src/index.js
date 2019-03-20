@@ -1,5 +1,19 @@
 import { app, BrowserWindow } from 'electron';
 const {ipcMain} = require('electron');
+const {autoUpdater} = require("electron-updater");
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ipcMain.on('request-mainprocess-action', (event, arg) => {
@@ -51,7 +65,19 @@ const createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', function() {
+  createWindow()
+  autoUpdater.checkForUpdates();
+
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  win.webContents.send('updateReady')
+});
+
+ipcMain.on("quitAndInstall", (event, arg) => {
+  autoUpdater.quitAndInstall();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -82,6 +108,7 @@ function download(data) {
       url: data.link,
       downloadFolder: data.folder,
       path: data.path,
+      icon: path.join(__dirname, 'assets/icons/png/96x96.png'),
       customFileName: data.customFileName,
       onProgress: (progress, item) => {
         mainWindow.webContents.send('downloadProgress', progress, data.customFileName);
