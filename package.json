@@ -1,8 +1,8 @@
 {
   "name": "ziboupdater",
-  "productName": "ziboupdater",
-  "version": "1.0.1",
-  "description": "My Electron application description",
+  "productName": "ziboUpdater",
+  "version": "1.0.3",
+  "description": "An awesome zibomod updater.",
   "main": "src/index.js",
   "build": {
     "nsis": {
@@ -18,12 +18,13 @@
     "win": {
       "target": "nsis",
       "icon": "build/icon.ico",
-      "publisherName": "Malte Hallström"
+      "publisherName": "Malte",
+      "forceCodeSigning": false
     },
     "appId": "com.ziboupdater.zu",
     "productName": "Zibo Updater (ZU)",
-    "buildVersion": "1.0.1",
-    "copyright": "Malte Hallström 2019"
+    "buildVersion": "1.0.3",
+    "copyright": "Malte2019"
   },
   "repository": "https://github.com/SkySails/ziboUpdater",
   "scripts": {
@@ -78,6 +79,7 @@
     "decompress-zip": "^0.2.2",
     "electron-compile": "^6.4.4",
     "electron-download-manager": "^2.3.0",
+    "electron-log": "^3.0.1",
     "electron-squirrel-startup": "^1.0.0",
     "electron-updater": "^4.0.6",
     "node-fetch": "^2.3.0"

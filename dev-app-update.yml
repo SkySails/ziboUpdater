@@ -1,6 +1,6 @@
 owner: SkySails
 repo: ziboUpdater
 provider: github
-updaterCacheDirName: ziboupdater-updater
+updaterCacheDirName: ZiboUpdater-cache
 publisherName:
-  - Malte Hallström
+  - "Malte"

@@ -2,7 +2,8 @@ import { app, BrowserWindow } from 'electron';
 const {ipcMain} = require('electron');
 const {autoUpdater} = require("electron-updater");
 
-
+autoUpdater.logger = require("electron-log")
+autoUpdater.logger.transports.file.level = "info"
 
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.

@@ -2,3 +2,4 @@ node_modules
 out
 electron-builder.yml
 /dist
+/app-update.yml
