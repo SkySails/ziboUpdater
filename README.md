@@ -29,6 +29,6 @@ Donate|A direct link to my PayPal donate page. Countless of hours and sleepless 
  - [ ] Changelogs
  - [ ] Integration with X-Planes SDK for auto-update notifications
 
-# UI Previwes
+# UI Previews
 An electron-based application used to update the awesome zibomod for X-Plane
 ![Screenshit](https://github.com/SkySails/ziboUpdater/blob/master/src/images/screenshot.PNG?raw=true)
