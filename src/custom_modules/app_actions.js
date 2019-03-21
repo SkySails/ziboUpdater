@@ -1,6 +1,8 @@
 // Retrieve remote BrowserWindow
 const {BrowserWindow} = require('electron').remote
 const shell = require('electron').shell
+let remote = require('electron').remote;
+let app = remote.app
 
 function init() {
     // Minimize task
@@ -20,6 +22,7 @@ document.onreadystatechange =  () => {
     if (document.readyState == "complete") {
         init();
         settings_menu();
+        setVersionTitle();
     }
 };
 
@@ -57,9 +60,14 @@ window.update_modal = function(info) {
     //var span = document.getElementsByClassName("close")[0];
 
 
-    var release_heading = document.getElementById('release_heading');
-    release_heading.innerHTML = info.releaseName
+    var release_heading = document.getElementById('release-heading');
+    release_heading.innerHTML = "Release: " + info.releaseName
     
+    var release_notes = document.getElementById('release-notes');
+    if ((typeof info.releaseNotes !== 'undefined')) {
+        release_notes.innerHTML = info.releaseNotes;
+    }
+     
 
     // When the user clicks on the button, open the modal 
     // btn.onclick = function() {
@@ -110,3 +118,7 @@ function settings_menu() {
     }
 }
 
+function setVersionTitle() {
+    var title = document.getElementById('title').children[0]
+    title.innerHTML = title.innerHTML + " " + app.getVersion();
+}
