@@ -23,10 +23,8 @@ Donate|A direct link to my PayPal donate page. Countless of hours and sleepless 
 
 ## Features to come
 
- - [ ] Working auto-update system
  - [ ] Settings (Backup options etc)
- - [ ] Improved UI
- - [ ] Changelogs
+ - [ ] Improved UI (?)
  - [ ] Integration with X-Planes SDK for auto-update notifications
 
 # UI Previews
