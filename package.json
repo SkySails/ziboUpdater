@@ -1,7 +1,7 @@
 {
   "name": "ziboupdater",
   "productName": "ziboUpdater",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "An awesome zibomod updater.",
   "main": "src/index.js",
   "build": {
@@ -24,7 +24,7 @@
     },
     "appId": "com.ziboupdater.zu",
     "productName": "ziboUpdater",
-    "buildVersion": "1.0.1",
+    "buildVersion": "1.0.0",
     "copyright": "Malte Hallstrom 2019"
   },
   "repository": "https://github.com/SkySails/ziboUpdater",
